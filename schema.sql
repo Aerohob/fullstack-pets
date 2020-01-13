@@ -28,6 +28,8 @@ create table pets (
      -- Th integer references the id in the table "owners"
 );
 
+-- psql -f schema.sql fullstack-pets
+-- psql -f seed.sql fullstack-pets
 
 
 -- Chris will demo many-to-many
