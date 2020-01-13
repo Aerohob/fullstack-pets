@@ -2,8 +2,14 @@ const db = require('./models/connection')
 
 
 // Create
-function create() {
-
+async function create(name, species, birthdate, owner_id) {
+    const result = await db.result(`
+    insert into pets
+        (name, species, birthdate, owner_id)
+    values
+    ($1, $2, $3, $4)
+    `, [name, species, birthdate, owner_id])
+    return result;
 }
 
 // Retrieve
@@ -71,9 +77,28 @@ if (result.rowCount === 1) {
 
 
 
-async function updateBirthdate(id, birthday) {
-    const result = await db.result
-}
+async function updateBirthdate(id, dateObject) {
+    // '2020-01-13'
+    let year = dateObject.getFullYear(); //yyyy
+    let month = dateObject.getMonth() + 1; //mm
+    if (month < 10) {
+        month = `0${month}`
+    }
+    let day = dateObject.getDate(); //dd
+    if (day < 10) {
+        day = `0${day}`;
+    }
+    const dateString = `${year}-${month}-${day}`;
+    const result = await db.result(`
+    update pets set
+        birthdate=$1
+    where id=$2
+    `, [dateString, id]);
+    return result;
+    }
+
+
+
 // Delete
 async function del(id) {
     const result = await db.result(`delete from pets where id=$1`, [id])
@@ -90,5 +115,6 @@ module.exports = {
     one,
     all,
     updateName,
+    updateBirthdate,
     del
 }
